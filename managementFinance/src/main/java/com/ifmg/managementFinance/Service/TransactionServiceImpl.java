@@ -25,6 +25,10 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public void save(Transaction transaction) {
+        if (transaction.getRegister_date() == null) {
+            transaction.setRegister_date(new Date());
+        }
+
         transactionRepository.save(transaction);
     }
 

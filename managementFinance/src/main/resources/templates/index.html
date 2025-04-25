@@ -71,7 +71,8 @@
             </td>
             <td class="px-6 py-4 whitespace-nowrap" th:text="${transaction.description}"></td>
             <td class="px-6 py-4 text-right text-red-600 whitespace-nowrap" th:text="${transaction.value}"></td>
-            <td class="px-6 py-4 whitespace-nowrap">2025-04-01</td>
+            <td class="px-6 py-4 whitespace-nowrap" th:text="${#dates.format(transaction.entry_date, 'dd/MM/yyyy')}"></td>
+             <!--Atualizado né-->
           </tr>
         </tbody>
       </table>
