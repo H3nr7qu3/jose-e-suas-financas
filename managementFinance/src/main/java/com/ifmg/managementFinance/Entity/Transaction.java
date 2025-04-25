@@ -5,9 +5,6 @@ import lombok.*;
 
 import java.util.Date;
 
-@Getter
-@Setter
-//esqueceu né
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -21,6 +18,15 @@ public class Transaction {
 
     private String description;
     private double value;
+
+    public void setRegister_date(Date register_date) {
+        this.register_date = register_date;
+    }
+
+    public Date getRegister_date() {
+        return register_date;
+    }
+
     private Type type;
 
     // tonin ta no papo
