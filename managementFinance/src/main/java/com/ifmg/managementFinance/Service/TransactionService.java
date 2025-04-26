@@ -2,11 +2,13 @@ package com.ifmg.managementFinance.Service;
 
 import com.ifmg.managementFinance.Entity.Transaction;
 
+import java.util.Date;
 import java.util.List;
 
 public interface TransactionService {
 
     List<Transaction> findAll();
+    List<Transaction> findAllByDate(Date fromDate, Date toDate);
 
     Transaction findById(Long id);
 

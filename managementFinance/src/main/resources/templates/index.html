@@ -18,18 +18,19 @@
 <main class="flex-1 p-8">
 
     <!-- Intervalo de Tempo -->
-    <div class="flex items-end space-x-4 mb-6">
+    <form action="/filter" method="get" class="flex items-end space-x-4 mb-6">
         <div>
             <label for="fromDate" class="block text-sm font-medium text-gray-700">De:</label>
-            <input type="date" id="fromDate" class="mt-1 block w-full p-2 border border-gray-300 rounded" />
+            <input type="date" id="fromDate" name="fromDate" class="mt-1 block w-full p-2 border border-gray-300 rounded" />
         </div>
         <div>
             <label for="toDate" class="block text-sm font-medium text-gray-700">Até:</label>
-            <input type="date" id="toDate" class="mt-1 block w-full p-2 border border-gray-300 rounded" />
+            <input type="date" id="toDate" name="toDate" class="mt-1 block w-full p-2 border border-gray-300 rounded" />
         </div>
-        <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Mês Atual</button>
-        <button class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">Filtrar</button>
-    </div>
+        <button type="submit" name="action" value="filter" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">Filtrar</button>
+        <button type="submit" name="action" value="month" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Mês Atual</button>
+    </form>
+
 
     <!-- Botão Nova Transação -->
     <div class="mb-4 flex justify-end">
