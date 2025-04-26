@@ -16,6 +16,6 @@ public interface TransactionService {
 
     //void update(Long id);
 
-    double getTotalValue(List<Transaction> transactions);
-
+    double getTotalExpenses(List<Transaction> transactions);
+    double getTotalReceived(List<Transaction> transactions);
 }

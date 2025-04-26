@@ -1,95 +1,98 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Finanças - Painel Principal</title>
-
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Finanças - Painel Principal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
-<body class="min-h-screen flex bg-gray-100">
-  <!-- Sidebar -->
-  <aside class="w-64 bg-white shadow-lg">
-    <div class="p-6">
-      <h1 class="text-2xl font-bold mb-8">
-        <a href="index">Finanças</a>
-      </h1>
-      <nav class="space-y-4">
-        <a href="settings.html" class="flex items-center text-gray-700 hover:text-blue-600">
-          <i class="fa fa-user-cog mr-3"></i> Configurações
-        </a>
-        <a href="trash.html" class="flex items-center text-gray-700 hover:text-blue-600">
-          <i class="fa fa-trash mr-3"></i> Lixeira
-        </a>
-        <a href="logout.html" class="flex items-center text-gray-700 hover:text-blue-600">
-          <i class="fa fa-sign-out-alt mr-3"></i> Logout
-        </a>
-      </nav>
-    </div>
-  </aside>
 
-  <!-- Main Content -->
-  <main class="flex-1 p-8">
-    
+<body class="min-h-screen flex bg-gray-100">
+
+<!-- Sidebar -->
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<!-- Main Content -->
+<main class="flex-1 p-8">
+
     <!-- Intervalo de Tempo -->
     <div class="flex items-end space-x-4 mb-6">
-      <div>
-        <label for="fromDate" class="block text-sm font-medium text-gray-700">De:</label>
-        <input type="date" id="fromDate" class="mt-1 block w-full p-2 border border-gray-300 rounded" />
-      </div>
-      <div>
-        <label for="toDate" class="block text-sm font-medium text-gray-700">Até:</label>
-        <input type="date" id="toDate" class="mt-1 block w-full p-2 border border-gray-300 rounded" />
-      </div>
-      <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Mês Atual</button>
-      <button class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">Filtrar</button>
+        <div>
+            <label for="fromDate" class="block text-sm font-medium text-gray-700">De:</label>
+            <input type="date" id="fromDate" class="mt-1 block w-full p-2 border border-gray-300 rounded" />
+        </div>
+        <div>
+            <label for="toDate" class="block text-sm font-medium text-gray-700">Até:</label>
+            <input type="date" id="toDate" class="mt-1 block w-full p-2 border border-gray-300 rounded" />
+        </div>
+        <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Mês Atual</button>
+        <button class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">Filtrar</button>
     </div>
 
     <!-- Botão Nova Transação -->
     <div class="mb-4 flex justify-end">
-      <a href="new-transaction.html" class="px-6 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
-        + Nova Transação
-      </a>
+        <a href="new-transaction" class="px-6 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
+            + Nova Transação
+        </a>
     </div>
 
     <!-- Tabela de Transações -->
     <div class="overflow-x-auto bg-white shadow rounded-lg">
-      <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-50">
-          <tr>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Classificação</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nome</th>
-            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Valor</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Data</th>
-          </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
-          <tr th:each="transaction :${transactions}">
-            <td class="px-6 py-4 flex items-center whitespace-nowrap">
-              <i class="fa fa-home text-lg text-blue-500 mr-2"></i> CASA
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap" th:text="${transaction.description}"></td>
-            <td class="px-6 py-4 text-right text-red-600 whitespace-nowrap" th:text="${transaction.value}"></td>
-            <td class="px-6 py-4 whitespace-nowrap">2025-04-01</td>
-          </tr>
-        </tbody>
-      </table>
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+            <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Classificação</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nome</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Valor</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Data</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Cadastro</th>
+                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Ações</th>
+            </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+            <tr th:each="transaction :${transactions}">
+                <td class="px-6 py-4 flex items-center whitespace-nowrap">
+                    <i class="text-lg text-blue-500 mr-2" th:text="${transaction.getType()}"></i>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap" th:text="${transaction.getName()}"></td>
+                <td class="px-6 py-4 text-right text-black-600 whitespace-nowrap" th:text="'R$ ' + ${transaction.getValue()}"></td>
+                <td class="px-6 py-4 whitespace-nowrap" th:text="${#dates.format(transaction.getEntry_date(), 'dd/MM/yyyy')}"></td>
+                <td class="px-6 py-4 whitespace-nowrap" th:text="${#dates.format(transaction.getRegister_date(), 'dd/MM/yyyy')}"></td>
+                <td class="px-6 py-4 whitespace-nowrap text-center space-x-2">
+                    <a href="edit-transaction.html" class="text-sm text-blue-600 hover:underline">
+                        <i class="fa fa-edit mr-1"></i>Editar
+                    </a>
+                    <button class="text-sm text-red-600 hover:underline">
+                        <i class="fa fa-trash mr-1"></i>Excluir
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 
     <!-- Totais -->
     <div class="mt-4 bg-white shadow rounded-lg p-6 flex justify-between">
-      <div>
-        <span class="block text-sm font-medium text-gray-700">Total Ganhos:</span>
-        <span class="text-xl font-bold text-green-600">R$ 0,00</span>
-      </div>
-      <div>
-        <span class="block text-sm font-medium text-gray-700">Total Despesas:</span>
-        <span class="text-xl font-bold text-red-600">R$ 0,00</span>
-      </div>
+        <div>
+            <span class="block text-sm font-medium text-gray-700">Total Ganhos:</span>
+            <span class="text-xl font-bold text-green-600" th:text="'R$ ' + ${totalReceived}"></span>
+        </div>
+
+        <div>
+            <span class="block text-sm font-medium text-gray-700">Diferença: </span>
+            <span class="text-xl font-bold text-gray-600" th:text="'R$ ' + ${total}"></span>
+        </div>
+
+        <div>
+            <span class="block text-sm font-medium text-gray-700">Total Despesas:</span>
+            <span class="text-xl font-bold text-red-600" th:text="'R$ ' + ${totalExpenses}"></span>
+        </div>
     </div>
 
-  </main>
+</main>
 
 </body>
+
 </html>

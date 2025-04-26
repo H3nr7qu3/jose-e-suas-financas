@@ -43,8 +43,20 @@ public class TransactionServiceImpl implements TransactionService {
      */
 
     @Override
-    public double getTotalValue(List<Transaction> transactions) {
-        return 0;
+    public double getTotalExpenses(List<Transaction> transactions) {
+        double total = 0;
+        for (Transaction transaction : transactions)
+            if(transaction.getValue()<0) total += transaction.getValue();
+
+        return total;
+    }
+    @Override
+    public double getTotalReceived(List<Transaction> transactions) {
+        double total = 0;
+        for (Transaction transaction : transactions)
+            if(transaction.getValue()>0) total += transaction.getValue();
+
+        return total;
     }
 
 
