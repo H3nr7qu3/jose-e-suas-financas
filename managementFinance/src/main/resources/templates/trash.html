@@ -1,10 +1,67 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Finanças - Lixeira</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
-<body>
-$END$
+
+<body class="min-h-screen flex bg-gray-100">
+
+<!-- Sidebar -->
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<!-- Main Content -->
+<main class="flex-1 p-8">
+
+    <!-- Título e Botão Voltar -->
+    <div class="flex items-center justify-between mb-6">
+        <h1 class="text-2xl font-bold text-gray-700">Lixeira</h1>
+        <a href="/" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
+            <i class="fa fa-arrow-left mr-2"></i> Voltar
+        </a>
+    </div>
+
+    <!-- Mensagem se não houver transações -->
+    <div th:if="${#lists.isEmpty(deletedTransactions)}" class="bg-white p-6 rounded-lg shadow text-center">
+        <p class="text-gray-600">Nenhuma transação na lixeira.</p>
+    </div>
+
+    <!-- Tabela de Transações Deletadas -->
+    <div th:if="${!#lists.isEmpty(deletedTransactions)}" class="overflow-x-auto bg-white shadow rounded-lg">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+            <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nome</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Valor</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Data</th>
+                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Ações</th>
+            </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+            <tr th:each="transaction : ${deletedTransactions}">
+                <td class="px-6 py-4 whitespace-nowrap" th:text="${transaction.name}"></td>
+                <td class="px-6 py-4 whitespace-nowrap text-right" th:text="'R$ ' + ${transaction.value}"></td>
+                <td class="px-6 py-4 whitespace-nowrap" th:text="${#dates.format(transaction.entry_date, 'dd/MM/yyyy')}"></td>
+                <td class="px-6 py-4 text-center space-x-2">
+                    <a th:href="@{'/deleted-transactions/restore/' + ${transaction.id}}"
+                       onclick="return confirm('Restaurar esta transação?');">
+                        Restaurar
+                    </a>
+                    <a th:href="@{'/deleted-transactions/delete-permanently/' + ${transaction.id}}"
+                       onclick="return confirm('Tem certeza que deseja excluir permanentemente?');">
+                        Excluir Definitivamente
+                    </a>
+
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</main>
+
 </body>
 </html>

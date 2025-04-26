@@ -13,13 +13,13 @@ import java.util.Date;
 import java.util.List;
 
 @Controller
-@RequestMapping("/")
+@RequestMapping("/")//mudei pra deixar mais facil de abrir a pag
 public class TransactionController {
 
     @Autowired
     TransactionServiceImpl transactionServiceImpl;
 
-    @GetMapping("/index")
+    @GetMapping("/")
     public String index(Model model) {
 
         List<Transaction> transactions = transactionServiceImpl.findAll();
@@ -37,7 +37,7 @@ public class TransactionController {
     public String filterByDate(
             @RequestParam(value = "fromDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date fromDate,
             @RequestParam(value = "toDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date toDate,
-            @RequestParam(value = "action", required = false) String action,  // action vai indicar qual filtro usar
+            @RequestParam(value = "action", required = false) String action,
             Model model) {
 
         List<Transaction> filteredTransactions = transactionServiceImpl.findAll();
@@ -49,10 +49,19 @@ public class TransactionController {
             filteredTransactions = transactionServiceImpl.findAllByDate(fromDate, toDate);
 
         } else if ("filter".equals(action)) {
-
-            if (fromDate != null && toDate != null)
+            if (fromDate != null && toDate != null) {
+                if (fromDate.after(toDate)) {
+                    // Deixar bonitin a msh de erro
+                    //Chama os nexo
+                    model.addAttribute("errorMessage", "A data inicial não pode ser maior que a data final.");
+                    model.addAttribute("transactions", transactionServiceImpl.findAll());
+                    model.addAttribute("totalExpenses", transactionServiceImpl.getTotalExpenses(filteredTransactions));
+                    model.addAttribute("totalReceived", transactionServiceImpl.getTotalReceived(filteredTransactions));
+                    model.addAttribute("total", transactionServiceImpl.getTotalReceived(filteredTransactions) + transactionServiceImpl.getTotalExpenses(filteredTransactions));
+                    return "index";
+                }
                 filteredTransactions = transactionServiceImpl.findAllByDate(fromDate, toDate);
-
+            }
         }
 
         double totalExpenses = transactionServiceImpl.getTotalExpenses(filteredTransactions);
@@ -62,6 +71,7 @@ public class TransactionController {
         model.addAttribute("totalExpenses", totalExpenses);
         model.addAttribute("totalReceived", totalReceived);
         model.addAttribute("total", totalReceived + totalExpenses);
+
         return "index";
     }
 
@@ -77,7 +87,7 @@ public class TransactionController {
     public String saveTransaction(@ModelAttribute Transaction transaction) {
         transaction.setRegister_date(new Date());
         transactionServiceImpl.save(transaction);
-        return "redirect:/index";
+        return "redirect:/";
     }
 
     @GetMapping("/edit/{id}")
@@ -85,7 +95,7 @@ public class TransactionController {
         Transaction transaction = transactionServiceImpl.findById(id);
 
         if (transaction == null)
-            return "redirect:/index"; // ou uma página de erro customizada
+            return "redirect:/"; // ou uma página de erro customizada
 
         model.addAttribute("transaction", transaction);
         model.addAttribute("types", Type.values());
@@ -96,7 +106,34 @@ public class TransactionController {
     @PostMapping("/update")
     public String updateTransaction(@ModelAttribute Transaction transaction) {
         transactionServiceImpl.update(transaction, transaction.getId());
-        return "redirect:/index";
+        return "redirect:/";
     }
+
+    //lixeira :0
+    @GetMapping("/trash")
+    public String showTrash(Model model) {
+        List<Transaction> deletedTransactions = transactionServiceImpl.findAllDeleted();
+        model.addAttribute("deletedTransactions", deletedTransactions);
+        return "trash";
+    }
+
+    @GetMapping("/restore/{id}")
+    public String restoreTransaction(@PathVariable Long id) {
+        transactionServiceImpl.restore(id);
+        return "redirect:/trash";
+    }
+
+    @GetMapping("/permanently-delete/{id}")
+    public String permanentlyDeleteTransaction(@PathVariable Long id) {
+        transactionServiceImpl.deletePermanently(id);
+
+        return "redirect:/trash";
+    }
+    @GetMapping("/delete/{id}")
+    public String deleteTransaction(@PathVariable Long id) {
+        transactionServiceImpl.delete(id);
+        return "redirect:/";
+    }
+
 
 }

@@ -14,10 +14,16 @@ public interface TransactionService {
 
     void save(Transaction transaction);
 
-    // void delete(Long id);
+
 
     void update(Transaction currentTransaction, Long id);
 
     double getTotalExpenses(List<Transaction> transactions);
     double getTotalReceived(List<Transaction> transactions);
+
+    // lixeira :)
+    List<Transaction> findAllDeleted();
+    void restore(Long id);
+    void deletePermanently(Long id);
+    void delete(Long id);
 }
