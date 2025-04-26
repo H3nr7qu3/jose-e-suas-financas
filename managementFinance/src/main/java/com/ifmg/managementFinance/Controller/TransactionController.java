@@ -84,8 +84,13 @@ public class TransactionController {
     }
 
     @PostMapping("/save")
-    public String saveTransaction(@ModelAttribute Transaction transaction) {
+    public String saveTransaction(@ModelAttribute Transaction transaction, @RequestParam("operation") String operation) {
         transaction.setRegister_date(new Date());
+
+        if(operation.equals("expense")) {
+            transaction.setValue(transaction.getValue() * -1);
+        }
+
         transactionServiceImpl.save(transaction);
         return "redirect:/";
     }

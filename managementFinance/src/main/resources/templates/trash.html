@@ -50,7 +50,7 @@
                        onclick="return confirm('Restaurar esta transação?');">
                         Restaurar
                     </a>
-                    <a th:href="@{'/deleted-transactions/delete-permanently/' + ${transaction.id}}"
+                    <a class="text-sm text-red-600 hover:underline" th:href="@{'/deleted-transactions/delete-permanently/' + ${transaction.id}}"
                        onclick="return confirm('Tem certeza que deseja excluir permanentemente?');">
                         Excluir Definitivamente
                     </a>

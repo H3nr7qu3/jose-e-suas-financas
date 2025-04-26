@@ -38,7 +38,6 @@ public class Transaction {
         this.register_date = new Date();
     }
 
-
     private Boolean deletedTransactions = false;
 
 }
