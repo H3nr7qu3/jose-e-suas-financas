@@ -3,6 +3,7 @@ package com.ifmg.managementFinance.Controller;
 import com.ifmg.managementFinance.Entity.Transaction;
 import com.ifmg.managementFinance.Entity.Type;
 import com.ifmg.managementFinance.Service.TransactionServiceImpl;
+import com.ifmg.managementFinance.Service.TrashServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -18,6 +19,9 @@ public class TransactionController {
 
     @Autowired
     TransactionServiceImpl transactionServiceImpl;
+
+    @Autowired
+    TrashServiceImpl trashService;
 
     @GetMapping("/")
     public String index(Model model) {
@@ -104,39 +108,30 @@ public class TransactionController {
 
         model.addAttribute("transaction", transaction);
         model.addAttribute("types", Type.values());
-
+        transactionServiceImpl.update(transaction, id);
         return "edit-transaction";
     }
 
     @PostMapping("/update")
     public String updateTransaction(@ModelAttribute Transaction transaction) {
         transactionServiceImpl.update(transaction, transaction.getId());
+
+
         return "redirect:/";
     }
 
     //lixeira :0
     @GetMapping("/trash")
     public String showTrash(Model model) {
-        List<Transaction> deletedTransactions = transactionServiceImpl.findAllDeleted();
+        List<Transaction> deletedTransactions = trashService.findAllDeleted();
         model.addAttribute("deletedTransactions", deletedTransactions);
         return "trash";
     }
 
-    @GetMapping("/restore/{id}")
-    public String restoreTransaction(@PathVariable Long id) {
-        transactionServiceImpl.restore(id);
-        return "redirect:/trash";
-    }
 
-    @GetMapping("/permanently-delete/{id}")
-    public String permanentlyDeleteTransaction(@PathVariable Long id) {
-        transactionServiceImpl.deletePermanently(id);
-
-        return "redirect:/trash";
-    }
     @GetMapping("/delete/{id}")
     public String deleteTransaction(@PathVariable Long id) {
-        transactionServiceImpl.delete(id);
+        trashService.delete(id);
         return "redirect:/";
     }
 

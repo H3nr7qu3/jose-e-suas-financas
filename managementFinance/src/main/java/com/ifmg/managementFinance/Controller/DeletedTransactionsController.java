@@ -1,6 +1,6 @@
 package com.ifmg.managementFinance.Controller;
 
-import com.ifmg.managementFinance.Service.TransactionServiceImpl;
+import com.ifmg.managementFinance.Service.TrashServiceImpl;
 import com.ifmg.managementFinance.Entity.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,25 +16,25 @@ import java.util.List;
 public class DeletedTransactionsController {
 
     @Autowired
-    private TransactionServiceImpl transactionService;
+    private TrashServiceImpl trashService;
 
     @GetMapping("/trash")
     public String showTrash(Model model) {
-        List<Transaction> deletedTransactions = transactionService.findAllDeleted();
+        List<Transaction> deletedTransactions = trashService.findAllDeleted();
         model.addAttribute("deletedTransactions", deletedTransactions);
         return "trash";
     }
 
     @GetMapping("/restore/{id}")
     public String restoreTransaction(@PathVariable Long id) {
-        transactionService.restore(id);
+        trashService.restore(id);
         // Redireciona de volta para a lista de lixeira completa
         return "redirect:/deleted-transactions/trash";
     }
 
     @GetMapping("/delete-permanently/{id}")
     public String deletePermanently(@PathVariable Long id) {
-        transactionService.deletePermanently(id);
+        trashService.deletePermanently(id);
         // Redireciona de volta para a lista de lixeira completa
         return "redirect:/deleted-transactions/trash";
     }

@@ -1,5 +1,6 @@
 package com.ifmg.managementFinance.Service;
 
+import com.ifmg.managementFinance.Entity.Operation;
 import com.ifmg.managementFinance.Entity.Transaction;
 import com.ifmg.managementFinance.Repository.TransactionRepository;
 import com.ifmg.managementFinance.Repository.TrashRepository;
@@ -18,8 +19,7 @@ public class TransactionServiceImpl implements TransactionService {
     @Autowired
     TransactionRepository transactionRepository;
 
-    @Autowired
-    TrashRepository trashRepository;
+
 
     @Override
     public List<Transaction> findAll() {
@@ -60,12 +60,7 @@ public class TransactionServiceImpl implements TransactionService {
         transactionRepository.save(transaction);
     }
 
-    /* CRIAR METODO DE DELETAR
-    @Override
-    public void delete(Long id) {
 
-    }
-     */
 
     @Override
     public void update(Transaction transaction, Long id) {
@@ -75,53 +70,29 @@ public class TransactionServiceImpl implements TransactionService {
         currentTransaction.setType(transaction.getType());
         currentTransaction.setEntry_date(transaction.getEntry_date());
         currentTransaction.setRegister_date(new Date());
+        currentTransaction.setOperation(transaction.getOperation());
 
         transactionRepository.save(currentTransaction);
     }
 
-    @Override
-    public double getTotalExpenses(List<Transaction> transactions) {
-        double total = 0;
-        for (Transaction transaction : transactions)
-            if(transaction.getValue()<0) total += transaction.getValue();
-
-        return total;
-    }
-    @Override
-    public double getTotalReceived(List<Transaction> transactions) {
-        double total = 0;
-        for (Transaction transaction : transactions)
-            if(transaction.getValue()>0) total += transaction.getValue();
-
-        return total;
-    }
 
     @Override
-    public List<Transaction> findAllDeleted() {
-        return trashRepository.findByDeletedTransactionsTrue();
+    public double getTotalReceived(List<Transaction> l) {
+        return l.stream()
+                .filter(t -> t.getOperation() == Operation.ENTRADA)
+                .mapToDouble(Transaction::getValue)
+                .sum();
+    }
+    @Override
+    public double getTotalExpenses(List<Transaction> l) {
+        return l.stream()
+                .filter(t -> t.getOperation() == Operation.SAIDA)
+                .mapToDouble(Transaction::getValue)
+                .sum();
     }
 
-    @Override
-    public void restore(Long id) {
-        Transaction transaction = transactionRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Transação não encontrada"));
-        transaction.setDeletedTransactions(false); //pq???
-        transactionRepository.save(transaction);
-    }
 
-    @Override
-    public void deletePermanently(Long id) {
-        Transaction transaction = transactionRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Transação não encontrada"));
-        transactionRepository.delete(transaction); // aqui deleta real do banco
-    }
-    @Override
-    public void delete(Long id) {
-        Transaction transaction = transactionRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Transação não encontrada: " + id));
-        transaction.setDeletedTransactions(true);   // marca como deletado
-        transactionRepository.save(transaction);    // persiste a mudança
-    }
+
 
 
 

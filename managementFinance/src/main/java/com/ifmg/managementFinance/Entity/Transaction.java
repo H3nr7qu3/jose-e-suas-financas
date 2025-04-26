@@ -1,9 +1,11 @@
 package com.ifmg.managementFinance.Entity;
 
 import jakarta.persistence.*;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.boot.beanvalidation.GroupsPerOperation;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
@@ -32,6 +34,9 @@ public class Transaction {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Temporal(TemporalType.DATE)
     private Date register_date;
+
+    @Enumerated(EnumType.STRING)
+    private Operation operation; //gambiarra
 
     @PrePersist
     protected void onCreate() {

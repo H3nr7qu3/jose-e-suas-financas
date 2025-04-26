@@ -7,6 +7,4 @@ import java.util.List;
 
 public interface TrashRepository extends JpaRepository<Transaction, Long> {
     List<Transaction> findByDeletedTransactionsTrue();
-
-
 }

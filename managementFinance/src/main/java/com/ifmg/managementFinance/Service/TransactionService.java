@@ -22,8 +22,5 @@ public interface TransactionService {
     double getTotalReceived(List<Transaction> transactions);
 
     // lixeira :)
-    List<Transaction> findAllDeleted();
-    void restore(Long id);
-    void deletePermanently(Long id);
-    void delete(Long id);
+
 }
