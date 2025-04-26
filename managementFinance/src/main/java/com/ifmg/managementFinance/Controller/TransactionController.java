@@ -80,4 +80,23 @@ public class TransactionController {
         return "redirect:/index";
     }
 
+    @GetMapping("/edit/{id}")
+    public String editTransaction(@PathVariable Long id, Model model) {
+        Transaction transaction = transactionServiceImpl.findById(id);
+
+        if (transaction == null)
+            return "redirect:/index"; // ou uma página de erro customizada
+
+        model.addAttribute("transaction", transaction);
+        model.addAttribute("types", Type.values());
+
+        return "edit-transaction";
+    }
+
+    @PostMapping("/update")
+    public String updateTransaction(@ModelAttribute Transaction transaction) {
+        transactionServiceImpl.update(transaction, transaction.getId());
+        return "redirect:/index";
+    }
+
 }

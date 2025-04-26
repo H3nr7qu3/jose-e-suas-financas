@@ -63,12 +63,17 @@ public class TransactionServiceImpl implements TransactionService {
     }
      */
 
-    /* CRIAR METODO DE ATUALIZAR
     @Override
-    public void update(Long id) {
+    public void update(Transaction transaction, Long id) {
+        Transaction currentTransaction = findById(id);
+        currentTransaction.setName(transaction.getName());
+        currentTransaction.setValue(transaction.getValue());
+        currentTransaction.setType(transaction.getType());
+        currentTransaction.setEntry_date(transaction.getEntry_date());
+        currentTransaction.setRegister_date(new Date());
 
+        transactionRepository.save(currentTransaction);
     }
-     */
 
     @Override
     public double getTotalExpenses(List<Transaction> transactions) {

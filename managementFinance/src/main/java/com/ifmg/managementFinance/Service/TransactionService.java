@@ -16,7 +16,7 @@ public interface TransactionService {
 
     // void delete(Long id);
 
-    //void update(Long id);
+    void update(Transaction currentTransaction, Long id);
 
     double getTotalExpenses(List<Transaction> transactions);
     double getTotalReceived(List<Transaction> transactions);
