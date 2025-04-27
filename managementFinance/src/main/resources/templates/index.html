@@ -68,7 +68,8 @@
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap" th:text="${transaction.getName()}"></td>
                 <td class="px-6 py-4 text-right text-black-600 whitespace-nowrap"
-                    th:text="${#numbers.formatCurrency(transaction.getValue())}"></td>
+                    th:text="${#numbers.formatCurrency(T(java.lang.Math).abs(transaction.getValue()))}"></td>
+
                 <td class="px-6 py-4 whitespace-nowrap" th:text="${#dates.format(transaction.getEntry_date(), 'dd/MM/yyyy')}"></td>
                 <td class="px-6 py-4 whitespace-nowrap" th:text="${#dates.format(transaction.getRegister_date(), 'dd/MM/yyyy')}"></td>
                 <td class="px-6 py-4 whitespace-nowrap text-center space-x-2">

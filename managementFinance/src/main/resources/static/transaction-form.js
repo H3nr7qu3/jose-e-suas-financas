@@ -1,4 +1,3 @@
-// transaction-form.js
 document.addEventListener('DOMContentLoaded', () => {
     const valueInput = document.getElementById('value-formatted');
     const originalInput = document.getElementById('original-value');
@@ -10,13 +9,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function processValue() {
         const cents = parseInt(valueInput.value.replace(/\D/g, ''), 10) || 0;
         const amount = cents / 100;
-        const op = document.querySelector('input[name="operation"]:checked').value;
-        originalInput.value = ((op === 'SAIDA' ? -1 : 1) * amount).toFixed(2);
-        // armazenar sempre valor positivo
-        originalInput.value = amount.toFixed(2);
+        originalInput.value = amount.toFixed(2); // sempre positivo
         valueInput.value = formatter.format(amount);
     }
-
 
     processValue();
     valueInput.addEventListener('input', processValue);
