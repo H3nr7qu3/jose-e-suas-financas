@@ -14,29 +14,32 @@ import java.util.Date;
 import java.util.List;
 
 @Controller
-@RequestMapping("/")//mudei pra deixar mais facil de abrir a pag
+@RequestMapping("/") // Define que todas as rotas deste controller começam pela raiz "/"
 public class TransactionController {
 
     @Autowired
-    TransactionServiceImpl transactionServiceImpl;
+    TransactionServiceImpl transactionServiceImpl; // Serviço que lida com as transações
 
     @Autowired
-    TrashServiceImpl trashService;
+    TrashServiceImpl trashService; // Serviço que lida com transações deletadas (trash)
 
+    // Página principal que exibe todas as transações e totais
     @GetMapping("/")
     public String index(Model model) {
+        List<Transaction> transactions = transactionServiceImpl.findAll(); // Busca todas transações
+        double totalExpenses = transactionServiceImpl.getTotalExpenses(transactions); // Soma das despesas
+        double totalReceived = transactionServiceImpl.getTotalReceived(transactions); // Soma dos recebimentos
 
-        List<Transaction> transactions = transactionServiceImpl.findAll();
-        double totalExpenses = transactionServiceImpl.getTotalExpenses(transactions);
-        double totalReceived = transactionServiceImpl.getTotalReceived(transactions);
-
+        // Adiciona tudo ao modelo para exibir na tela
         model.addAttribute("transactions", transactions);
         model.addAttribute("totalExpenses", totalExpenses);
         model.addAttribute("totalReceived", totalReceived);
-        model.addAttribute("total", totalReceived + totalExpenses);
-        return "index";
+        model.addAttribute("total", totalReceived + totalExpenses); // Total geral (receita - despesa)
+
+        return "index"; // Retorna a view "index.html"
     }
 
+    // Filtro de transações por data ou por mês atual
     @GetMapping("/filter")
     public String filterByDate(
             @RequestParam(value = "fromDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date fromDate,
@@ -44,19 +47,19 @@ public class TransactionController {
             @RequestParam(value = "action", required = false) String action,
             Model model) {
 
-        List<Transaction> filteredTransactions = transactionServiceImpl.findAll();
+        List<Transaction> filteredTransactions = transactionServiceImpl.findAll(); // Começa com todas as transações
 
         if ("month".equals(action)) {
+            // Se clicou pra ver o mês atual
             fromDate = transactionServiceImpl.getCurrentMonthRange().get(0);
             toDate = transactionServiceImpl.getCurrentMonthRange().get(1);
-
             filteredTransactions = transactionServiceImpl.findAllByDate(fromDate, toDate);
 
         } else if ("filter".equals(action)) {
+            // Filtro manual pelas datas fornecidas
             if (fromDate != null && toDate != null) {
                 if (fromDate.after(toDate)) {
-                    // Deixar bonitin a msh de erro
-                    //Chama os nexo
+                    // Erro: data inicial depois da final
                     model.addAttribute("errorMessage", "A data inicial não pode ser maior que a data final.");
                     model.addAttribute("transactions", transactionServiceImpl.findAll());
                     model.addAttribute("totalExpenses", transactionServiceImpl.getTotalExpenses(filteredTransactions));
@@ -64,10 +67,12 @@ public class TransactionController {
                     model.addAttribute("total", transactionServiceImpl.getTotalReceived(filteredTransactions) + transactionServiceImpl.getTotalExpenses(filteredTransactions));
                     return "index";
                 }
+                // Filtro válido
                 filteredTransactions = transactionServiceImpl.findAllByDate(fromDate, toDate);
             }
         }
 
+        // Calcula e adiciona os totais filtrados
         double totalExpenses = transactionServiceImpl.getTotalExpenses(filteredTransactions);
         double totalReceived = transactionServiceImpl.getTotalReceived(filteredTransactions);
 
@@ -76,64 +81,63 @@ public class TransactionController {
         model.addAttribute("totalReceived", totalReceived);
         model.addAttribute("total", totalReceived + totalExpenses);
 
-        return "index";
+        return "index"; // Retorna a mesma view principal com os dados filtrados
     }
 
+    // Página para criar nova transação
     @GetMapping("/new-transaction")
     public String newTransaction(Model model) {
-        model.addAttribute("types", Type.values());
-        model.addAttribute("transaction", new Transaction());
-
-        return "new-transaction";
+        model.addAttribute("types", Type.values()); // Tipos de transações (enum)
+        model.addAttribute("transaction", new Transaction()); // Objeto vazio para o formulário
+        return "new-transaction"; // View de criação
     }
 
+    // Salva uma nova transação no banco
     @PostMapping("/save")
     public String saveTransaction(@ModelAttribute Transaction transaction, @RequestParam("operation") String operation) {
-        transaction.setRegister_date(new Date());
+        transaction.setRegister_date(new Date()); // Define a data de registro como agora
 
-        if(operation.equals("expense")) {
-            transaction.setValue(transaction.getValue() * -1);
+        if(operation.equals("SAIDA")) {
+            transaction.setValue(transaction.getValue() * -1); // Se for despesa, valor é negativo
         }
 
-        transactionServiceImpl.save(transaction);
-        return "redirect:/";
+        transactionServiceImpl.save(transaction); // Salva no banco
+        return "redirect:/"; // Redireciona pra página principal
     }
 
+    // Edita uma transação existente
     @GetMapping("/edit/{id}")
     public String editTransaction(@PathVariable Long id, Model model) {
         Transaction transaction = transactionServiceImpl.findById(id);
 
         if (transaction == null)
-            return "redirect:/"; // ou uma página de erro customizada
+            return "redirect:/"; // Se não achar, volta pro início
 
         model.addAttribute("transaction", transaction);
         model.addAttribute("types", Type.values());
         transactionServiceImpl.update(transaction, id);
-        return "edit-transaction";
+        return "edit-transaction"; // View de edição
     }
 
+    // Atualiza transação já existente
     @PostMapping("/update")
     public String updateTransaction(@ModelAttribute Transaction transaction) {
-        transactionServiceImpl.update(transaction, transaction.getId());
-
-
+        transactionServiceImpl.update(transaction, transaction.getId()); // Atualiza com os dados do form
         return "redirect:/";
     }
 
-    //lixeira :0
+    // Exibe a lixeira com transações deletadas
     @GetMapping("/trash")
     public String showTrash(Model model) {
         List<Transaction> deletedTransactions = trashService.findAllDeleted();
         model.addAttribute("deletedTransactions", deletedTransactions);
-        return "trash";
+        return "trash"; // View da lixeira
     }
 
-
+    // Deleta (move pra lixeira) uma transação
     @GetMapping("/delete/{id}")
     public String deleteTransaction(@PathVariable Long id) {
-        trashService.delete(id);
+        trashService.delete(id); // Move a transação pra lixeira
         return "redirect:/";
     }
-
-
 }

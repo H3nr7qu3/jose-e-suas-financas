@@ -1,5 +1,6 @@
 package com.ifmg.managementFinance.Entity;
 
+// Enum que categoriza as transações por tipo/gasto específico
 public enum Type {
     COMPRAS,
     ALIMENTACAO,
@@ -8,5 +9,5 @@ public enum Type {
     SALARIO,
     CONTAS,
     INVESTIMENTO,
-    BEM_ESTAR,
+    BEM_ESTAR
 }
