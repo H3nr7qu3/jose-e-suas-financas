@@ -33,7 +33,13 @@ public class TransactionController {
         double totalExpenses = transactionServiceImpl.getTotalExpenses(transactions); // Soma das despesas
         double totalReceived = transactionServiceImpl.getTotalReceived(transactions); // Soma dos recebimentos
 
-        return populateModel(model, transactions);
+        // Adiciona tudo ao modelo para exibir na tela
+        model.addAttribute("transactions", transactions);
+        model.addAttribute("totalExpenses", totalExpenses);
+        model.addAttribute("totalReceived", totalReceived);
+        model.addAttribute("total", totalReceived + totalExpenses); // Total geral (receita - despesa)
+
+        return "index"; // Retorna a view "index.html"
     }
 
     // Filtro de transações por data ou por mês atual
@@ -58,26 +64,27 @@ public class TransactionController {
                 if (fromDate.after(toDate)) {
                     // Erro: data inicial depois da final
                     model.addAttribute("errorMessage", "A data inicial não pode ser maior que a data final.");
-                    return populateModel(model, filteredTransactions);
+                    model.addAttribute("transactions", transactionServiceImpl.findAll());
+                    model.addAttribute("totalExpenses", transactionServiceImpl.getTotalExpenses(filteredTransactions));
+                    model.addAttribute("totalReceived", transactionServiceImpl.getTotalReceived(filteredTransactions));
+                    model.addAttribute("total", transactionServiceImpl.getTotalReceived(filteredTransactions) + transactionServiceImpl.getTotalExpenses(filteredTransactions));
+                    return "index";
                 }
                 // Filtro válido
                 filteredTransactions = transactionServiceImpl.findAllByDate(fromDate, toDate);
             }
         }
 
-        return populateModel(model, filteredTransactions);
-    }
+        // Calcula e adiciona os totais filtrados
+        double totalExpenses = transactionServiceImpl.getTotalExpenses(filteredTransactions);
+        double totalReceived = transactionServiceImpl.getTotalReceived(filteredTransactions);
 
-    private String populateModel(Model model, List<Transaction> transactions) {
-        double totalExpenses = transactionServiceImpl.getTotalExpenses(transactions);
-        double totalReceived = transactionServiceImpl.getTotalReceived(transactions);
-
-        model.addAttribute("transactions", transactions);
+        model.addAttribute("transactions", filteredTransactions);
         model.addAttribute("totalExpenses", totalExpenses);
         model.addAttribute("totalReceived", totalReceived);
         model.addAttribute("total", totalReceived + totalExpenses);
 
-        return "index";
+        return "index"; // Retorna a mesma view principal com os dados filtrados
     }
 
     // Página para criar nova transação
@@ -124,10 +131,29 @@ public class TransactionController {
         return "redirect:/";
     }
 
+    // Exibe a lixeira com transações deletadas
+    @GetMapping("/trash")
+    public String showTrash(Model model) {
+        List<Transaction> deletedTransactions = trashService.findAllDeleted();
+        model.addAttribute("deletedTransactions", deletedTransactions);
+        return "trash"; // View da lixeira
+    }
+
     // Deleta (move pra lixeira) uma transação
     @GetMapping("/delete/{id}")
     public String deleteTransaction(@PathVariable Long id) {
         trashService.delete(id); // Move a transação pra lixeira
         return "redirect:/";
+    }
+
+    private double parseValue(String valueFormatted) {
+        try {
+            // Remove símbolo de moeda, espaços, etc.
+            NumberFormat format = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+            Number number = format.parse(valueFormatted);
+            return number.doubleValue();
+        } catch (ParseException e) {
+            throw new RuntimeException("Erro ao converter o valor: " + valueFormatted, e);
+        }
     }
 }
