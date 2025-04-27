@@ -78,9 +78,9 @@ public class TransactionController {
         double totalReceived = transactionServiceImpl.getTotalReceived(transactions);
 
         model.addAttribute("transactions", transactions);
-        model.addAttribute("totalExpenses", totalExpenses);
-        model.addAttribute("totalReceived", totalReceived);
-        model.addAttribute("total", totalReceived - totalExpenses);
+        model.addAttribute("totalExpenses", totalExpenses);//total da saida
+        model.addAttribute("totalReceived", totalReceived);// todal da entrada
+        model.addAttribute("total", totalReceived - totalExpenses);// Diferença
 
         return "index";
     }

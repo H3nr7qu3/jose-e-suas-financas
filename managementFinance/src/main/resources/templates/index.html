@@ -17,7 +17,7 @@
 <!-- Main Content -->
 <main class="flex-1 p-8">
 
-    <!-- Intervalo de Tempo -->
+    <!-- Time Interval -->
     <form action="/filter" method="get" class="flex items-end space-x-4 mb-6">
         <div>
             <label for="fromDate" class="block text-sm font-medium text-gray-700">De:</label>
@@ -31,19 +31,19 @@
         <button type="submit" name="action" value="month" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Mês Atual</button>
     </form>
 
-    <!-- Mensagem de Erro -->
+    <!-- Error Message -->
     <div th:if="${errorMessage}" class="mb-6 p-4 bg-red-100 text-red-700 rounded-lg">
         <p th:text="${errorMessage}"></p>
     </div>
 
-    <!-- Botão Nova Transação -->
+    <!-- New Transaction Button -->
     <div class="mb-4 flex justify-end">
         <a href="new-transaction" class="px-6 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
             + Nova Transação
         </a>
     </div>
 
-    <!-- Tabela de Transações -->
+    <!-- Transactions Table -->
     <div class="overflow-x-auto bg-white shadow rounded-lg">
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
@@ -57,22 +57,21 @@
             </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
-            <!-- Verificar se há transações -->
+            <!-- Check if there are transactions -->
             <tr th:if="${#lists.isEmpty(transactions)}">
                 <td colspan="6" class="px-6 py-4 text-center text-gray-500">Nenhuma transação encontrada.</td>
             </tr>
-            <!-- Listagem de transações -->
+            <!-- Transactions Listing -->
             <tr th:each="transaction : ${transactions}">
                 <td class="px-6 py-4 flex items-center whitespace-nowrap">
                     <i class="text-lg text-blue-500 mr-2" th:text="${transaction.getType().label}"></i>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap" th:text="${transaction.getName()}"></td>
                 <td class="px-6 py-4 text-right whitespace-nowrap">
-                <span th:text="${transaction.operation == T(com.ifmg.managementFinance.Entity.Operation).SAIDA
-                 ? '-' + #numbers.formatCurrency(T(java.lang.Math).abs(transaction.value))
-                 : #numbers.formatCurrency(transaction.value)}"></span>
+                    <span th:text="${transaction.operation == T(com.ifmg.managementFinance.Entity.Operation).SAIDA
+                     ? '-' + #numbers.formatCurrency(T(java.lang.Math).abs(transaction.value))
+                     : #numbers.formatCurrency(transaction.value)}"></span>
                 </td>
-
                 <td class="px-6 py-4 whitespace-nowrap" th:text="${#dates.format(transaction.getEntry_date(), 'dd/MM/yyyy')}"></td>
                 <td class="px-6 py-4 whitespace-nowrap" th:text="${#dates.format(transaction.getRegister_date(), 'dd/MM/yyyy')}"></td>
                 <td class="px-6 py-4 whitespace-nowrap text-center space-x-2">
@@ -88,7 +87,8 @@
             </tbody>
         </table>
     </div>
-    <!-- Totais - Exibido apenas se houver transações -->
+
+    <!-- Totals - Displayed only if there are transactions -->
     <div th:if="${not #lists.isEmpty(transactions)}" class="mt-4 bg-white shadow rounded-lg p-6 flex justify-between">
         <div>
             <span class="block text-sm font-medium text-gray-700">Total Ganhos:</span>

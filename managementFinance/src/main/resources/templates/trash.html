@@ -16,7 +16,7 @@
 <!-- Main Content -->
 <main class="flex-1 p-8">
 
-    <!-- Título e Botão Voltar -->
+    <!-- Title and Back Button -->
     <div class="flex items-center justify-between mb-6">
         <h1 class="text-2xl font-bold text-gray-700">Lixeira</h1>
         <a href="/" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
@@ -24,12 +24,12 @@
         </a>
     </div>
 
-    <!-- Mensagem se não houver transações -->
+    <!-- Message if there are no transactions -->
     <div th:if="${#lists.isEmpty(deletedTransactions)}" class="bg-white p-6 rounded-lg shadow text-center">
         <p class="text-gray-600">Nenhuma transação na lixeira.</p>
     </div>
 
-    <!-- Tabela de Transações Deletadas -->
+    <!-- Deleted Transactions Table -->
     <div th:if="${!#lists.isEmpty(deletedTransactions)}" class="overflow-x-auto bg-white shadow rounded-lg">
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
@@ -54,7 +54,6 @@
                        onclick="return confirm('Tem certeza que deseja excluir permanentemente?');">
                         Excluir Definitivamente
                     </a>
-
                 </td>
             </tr>
             </tbody>

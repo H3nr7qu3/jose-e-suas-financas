@@ -8,7 +8,6 @@ import java.util.List;
 // Repositório focado em transações que estão "deletadas" (ou seja, na lixeira)
 // Herda de JpaRepository, que já fornece os métodos básicos (CRUD)
 public interface TrashRepository extends JpaRepository<Transaction, Long> {
-
     // Busca todas as transações com o campo deletedTransactions = true
     List<Transaction> findByDeletedTransactionsTrue();
 }

@@ -17,13 +17,13 @@
     <form class="space-y-4 max-w-md" th:action="@{/update}" method="post">
         <input type="hidden" name="id" th:value="${transaction.id}" />
 
-        <!-- Nome -->
+        <!-- Name -->
         <div>
             <label class="block text-sm font-medium text-gray-700">Nome</label>
             <input type="text" name="name" th:value="${transaction.name}" class="mt-1 block w-full p-2 border rounded" />
         </div>
 
-        <!-- Valor -->
+        <!-- Value -->
         <div>
             <label class="block text-sm font-medium text-gray-700">Valor</label>
             <input
@@ -38,7 +38,7 @@
             <input type="hidden" id="original-value" name="value" th:value="${transaction.value}" />
         </div>
 
-        <!-- Operação -->
+        <!-- Operation -->
         <div>
             <ul class="flex divide-x border rounded bg-white">
                 <li class="flex-1 flex items-center p-2">
@@ -54,7 +54,7 @@
             </ul>
         </div>
 
-        <!-- Data -->
+        <!-- Date -->
         <div>
             <label class="block text-sm font-medium text-gray-700">Data</label>
             <input type="date" name="entry_date"
@@ -62,7 +62,7 @@
                    class="mt-1 block w-full p-2 border rounded" />
         </div>
 
-        <!-- Classificação -->
+        <!-- Classification -->
         <div>
             <label class="block text-sm font-medium text-gray-700">Classificação</label>
             <select name="type" class="mt-1 block w-full p-2 border rounded">
@@ -75,7 +75,7 @@
         <button type="submit" class="px-4 py-2 bg-yellow-500 text-white rounded">Atualizar</button>
     </form>
 
-    <!-- Script unificado -->
+    <!-- Unified script -->
     <script src="/transaction-form.js"></script>
 </main>
 </body>

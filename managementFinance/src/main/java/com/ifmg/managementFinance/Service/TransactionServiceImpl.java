@@ -30,11 +30,14 @@ public class TransactionServiceImpl implements TransactionService {
     public List<Transaction> findAllByDate(Date fromDate, Date toDate) {
         // Filtra transações com base em um intervalo de datas
         List<Transaction> transactions = new ArrayList<Transaction>();
-        Date nextDay = new Date(toDate.getTime() + 24 * 60 * 60 * 1000L); // Ajusta para que mostre transações do final do intervalo
+
+        // Ajusta a data de 'toDate' para incluir o final do dia
+        Date nextDay = new Date(toDate.getTime() + 24 * 60 * 60 * 1000L);
 
         // Itera sobre todas as transações e verifica se a data de entrada está dentro do intervalo
         for (Transaction transaction : findAll()) {
             Date entryDate = transaction.getEntry_date();
+            // Adiciona transação se a data de entrada estiver dentro do intervalo de datas fornecido
             if (!entryDate.before(fromDate) && !entryDate.after(nextDay)) {
                 transactions.add(transaction);
             }
@@ -53,7 +56,7 @@ public class TransactionServiceImpl implements TransactionService {
         Date fromData = Date.from(firstDay.atStartOfDay(ZoneId.systemDefault()).toInstant());
         Date toData = Date.from(lastDay.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
-        return List.of(fromData, toData);
+        return List.of(fromData, toData); // Retorna a lista com as duas datas
     }
 
     @Override
@@ -73,6 +76,7 @@ public class TransactionServiceImpl implements TransactionService {
         // Atualiza os detalhes de uma transação existente
         Transaction currentTransaction = findById(id);
         if (currentTransaction != null) {
+            // Atualiza os campos da transação com os novos valores
             currentTransaction.setName(transaction.getName());
             currentTransaction.setValue(transaction.getValue());
             currentTransaction.setType(transaction.getType());
@@ -80,27 +84,32 @@ public class TransactionServiceImpl implements TransactionService {
             currentTransaction.setRegister_date(new Date()); // Atualiza a data de registro
             currentTransaction.setOperation(transaction.getOperation());
 
-            transactionRepository.save(currentTransaction); // Salva as alterações
+            // Salva as alterações da transação
+            transactionRepository.save(currentTransaction);
         }
     }
 
     @Override
     public double getTotalReceived(List<Transaction> l) {
         // Calcula o total de transações do tipo "ENTRADA"
-        return l.stream()
-                .filter(t -> t.getOperation() == Operation.ENTRADA) // Filtra por operações de "ENTRADA"
-                .mapToDouble(Transaction::getValue) // Extrai o valor de cada transação
-                .sum(); // Soma todos os valores filtrados
+        double total = 0;
+        for (Transaction t : l) {
+            if (t.getOperation() == Operation.ENTRADA) {
+                total += t.getValue(); // Soma os valores das transações de "ENTRADA"
+            }
+        }
+        return total;
     }
 
     @Override
     public double getTotalExpenses(List<Transaction> l) {
         // Soma o valor absoluto de cada transação de saída
-        return l.stream()
-                .filter(t -> t.getOperation() == Operation.SAIDA)
-                .mapToDouble(t -> Math.abs(t.getValue()))
-                .sum();
+        double total = 0;
+        for (Transaction t : l) {
+            if (t.getOperation() == Operation.SAIDA) {
+                total += Math.abs(t.getValue()); // Soma os valores absolutos das transações de "SAÍDA"
+            }
+        }
+        return total;
     }
-
-
 }

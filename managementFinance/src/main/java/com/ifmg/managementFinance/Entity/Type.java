@@ -15,7 +15,7 @@ public enum Type {
     CONTAS("Contas"),
     INVESTIMENTO("Investimento"),
     BEM_ESTAR("Bem-estar");
-//    MEGA_SENA("Mega sena"); // um dia seu José
+//    MEGA_SENA("Mega sena"); // Talvez um dia, Seu José
 
     private final String label;
 }
