@@ -7,13 +7,15 @@ document.addEventListener('DOMContentLoaded', () => {
         style: 'currency', currency: 'BRL', minimumFractionDigits: 2
     });
 
-    function processValue() {
-        const cents = parseInt(valueInput.value.replace(/\D/g, ''), 10) || 0;
-        const amount = cents / 100;
-        const op = document.querySelector('input[name="operation"]:checked').value;
-        originalInput.value = ((op === 'SAIDA' ? -1 : 1) * amount).toFixed(2);
-        valueInput.value = formatter.format(amount);
-    }
+   function processValue() {
+       const cents = parseInt(valueInput.value.replace(/\D/g, ''), 10) || 0;
+       const amount = cents / 100;
+       const op = document.querySelector('input[name="operation"]:checked').value;
+      originalInput.value = ((op === 'SAIDA' ? -1 : 1) * amount).toFixed(2);
+     // armazenar sempre valor positivo
+      originalInput.value = amount.toFixed(2);
+       valueInput.value = formatter.format(amount);
+   }
 
     processValue();
     valueInput.addEventListener('input', processValue);
