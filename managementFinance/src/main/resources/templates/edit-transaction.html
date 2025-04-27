@@ -116,14 +116,21 @@
             let numeric = input.value.replace(/\D/g, '');
             let number = parseInt(numeric, 10) / 100;
             if (isNaN(number)) number = 0;
+            // garantir valor positivo
+            number = Math.abs(number);
             updateOriginalValue(number);
             input.value = currencyFormatter.format(number);
         }
 
         window.addEventListener('load', () => {
             const input = document.getElementById('value-formatted');
-            let initial = parseFloat(input.getAttribute('value').replace(',', '.'));
+            // remover pontos e trocar vírgula antes de parse
+            let raw = input.getAttribute('value') || '0';
+            raw = raw.replace(/\./g, '').replace(',', '.');
+            let initial = parseFloat(raw);
             if (isNaN(initial)) initial = 0;
+            // garantir positivo
+            initial = Math.abs(initial);
             updateOriginalValue(initial);
             input.value = currencyFormatter.format(initial);
             input.addEventListener('input', formatCurrency);
