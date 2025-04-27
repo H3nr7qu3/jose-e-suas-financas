@@ -33,7 +33,9 @@ public class TransactionServiceImpl implements TransactionService {
 
         // Itera sobre todas as transações e verifica se a data de entrada está dentro do intervalo
         for (Transaction transaction : findAll()) {
-            if (fromDate.before(transaction.getEntry_date()) && toDate.after(transaction.getEntry_date())) {
+            Date entryDate = transaction.getEntry_date();
+            if ((fromDate.before(transaction.getEntry_date()) || fromDate.equals(entryDate))
+                    && (toDate.after(transaction.getEntry_date())) || toDate.equals(entryDate)) {
                 transactions.add(transaction);
             }
         }
@@ -93,10 +95,12 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public double getTotalExpenses(List<Transaction> l) {
-        // Calcula o total de transações do tipo "SAÍDA"
+        // Soma o valor absoluto de cada transação de saída
         return l.stream()
-                .filter(t -> t.getOperation() == Operation.SAIDA) // Filtra por operações de "SAÍDA"
-                .mapToDouble(Transaction::getValue) // Extrai o valor de cada transação
-                .sum(); // Soma todos os valores filtrados
+                .filter(t -> t.getOperation() == Operation.SAIDA)
+                .mapToDouble(t -> Math.abs(t.getValue()))
+                .sum();
     }
+
+
 }
