@@ -10,4 +10,5 @@ public enum Type {
     CONTAS,
     INVESTIMENTO,
     BEM_ESTAR
+    // MEGA_SENA //no futuro talvez, seu josé não tem tanta sorte
 }
