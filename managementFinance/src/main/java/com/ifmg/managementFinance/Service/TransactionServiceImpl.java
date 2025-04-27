@@ -33,7 +33,9 @@ public class TransactionServiceImpl implements TransactionService {
 
         // Itera sobre todas as transações e verifica se a data de entrada está dentro do intervalo
         for (Transaction transaction : findAll()) {
-            if (fromDate.before(transaction.getEntry_date()) && toDate.after(transaction.getEntry_date())) {
+            Date entryDate = transaction.getEntry_date();
+            if ((fromDate.before(transaction.getEntry_date()) || fromDate.equals(entryDate))
+                    && (toDate.after(transaction.getEntry_date())) || toDate.equals(entryDate)) {
                 transactions.add(transaction);
             }
         }
