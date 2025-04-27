@@ -30,12 +30,12 @@ public class TransactionServiceImpl implements TransactionService {
     public List<Transaction> findAllByDate(Date fromDate, Date toDate) {
         // Filtra transações com base em um intervalo de datas
         List<Transaction> transactions = new ArrayList<Transaction>();
+        Date nextDay = new Date(toDate.getTime() + 24 * 60 * 60 * 1000L); // Ajusta para que mostre transações do final do intervalo
 
         // Itera sobre todas as transações e verifica se a data de entrada está dentro do intervalo
         for (Transaction transaction : findAll()) {
             Date entryDate = transaction.getEntry_date();
-            if ((fromDate.before(transaction.getEntry_date()) || fromDate.equals(entryDate))
-                    && (toDate.after(transaction.getEntry_date())) || toDate.equals(entryDate)) {
+            if (!entryDate.before(fromDate) && !entryDate.after(nextDay)) {
                 transactions.add(transaction);
             }
         }

@@ -54,8 +54,13 @@ public class TransactionController {
 
         } else if ("filter".equals(action)) {
             // Filtro manual pelas datas fornecidas
-            if (fromDate != null && toDate != null) {
-                if (fromDate.after(toDate)) {
+            if (fromDate != null || toDate != null) {
+                if(fromDate == null ^ toDate == null) { // XOR: Apenas um pode ser verdadeiro
+                    // Erro: data falta uma das datas
+                    model.addAttribute("errorMessage", "Insira duas datas para filtrar.");
+                    return populateModel(model, filteredTransactions);
+                }
+                else if (fromDate.after(toDate)) {
                     // Erro: data inicial depois da final
                     model.addAttribute("errorMessage", "A data inicial não pode ser maior que a data final.");
                     return populateModel(model, filteredTransactions);
@@ -67,7 +72,7 @@ public class TransactionController {
 
         return populateModel(model, filteredTransactions);
     }
-    //teste
+
     private String populateModel(Model model, List<Transaction> transactions) {
         double totalExpenses = transactionServiceImpl.getTotalExpenses(transactions);
         double totalReceived = transactionServiceImpl.getTotalReceived(transactions);
