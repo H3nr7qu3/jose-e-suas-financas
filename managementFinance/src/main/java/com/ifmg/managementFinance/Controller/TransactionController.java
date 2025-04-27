@@ -67,7 +67,7 @@ public class TransactionController {
 
         return populateModel(model, filteredTransactions);
     }
-
+    //teste
     private String populateModel(Model model, List<Transaction> transactions) {
         double totalExpenses = transactionServiceImpl.getTotalExpenses(transactions);
         double totalReceived = transactionServiceImpl.getTotalReceived(transactions);
