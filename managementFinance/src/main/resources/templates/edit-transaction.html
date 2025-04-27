@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" xmlns:th="http://www.w3.org/1999/xhtml">
 
 <head>
     <meta charset="UTF-8" />
@@ -18,17 +18,22 @@
 <main class="flex-1 p-8">
     <h2 class="text-2xl font-bold mb-6">Editar Transação</h2>
 
-    <form class="space-y-4 max-w-md" action="/update" method="post">
+    <form class="space-y-4 max-w-md" th:action="@{/update}" method="post">
+        <!-- CSRF Token (apenas se disponível) -->
+        <div th:if="${_csrf != null}">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+        </div>
+
         <!-- ID -->
         <input type="hidden" name="id" th:value="${transaction.id}" />
 
-        <!-- Name -->
+        <!-- Nome -->
         <div>
             <label class="block text-sm font-medium text-gray-700">Nome</label>
             <input type="text" name="name" th:value="${transaction.name}" class="mt-1 block w-full p-2 border border-gray-300 rounded" />
         </div>
 
-        <!-- Value Field -->
+        <!-- Valor -->
         <div>
             <label class="block text-sm font-medium text-gray-700">Valor</label>
             <input
@@ -37,38 +42,13 @@
                     id="value-formatted"
                     required
                     inputmode="decimal"
-                    th:value="${transaction.value}"
+                    th:value="${#numbers.formatDecimal(transaction.value, 1, 2)}"
                     class="mt-1 block w-full p-2 border border-gray-300 rounded"
-                    oninput="formatCurrency(this)"
             />
             <input type="hidden" name="value" id="original-value" />
         </div>
 
-        <script>
-            function formatCurrency(input) {
-                let value = input.value.replace(/\D/g, '');
-
-                if (value === '' || parseInt(value) < 1) {
-                    value = '1';
-                }
-
-                value = (value / 100).toFixed(2);
-                document.getElementById('original-value').value = parseFloat(value.replace(',', '.'));
-                value = value
-                    .replace('.', ',')
-                    .replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-                input.value = 'R$ ' + value;
-            }
-
-            window.addEventListener('load', function () {
-                const input = document.getElementById('value-formatted');
-                if (input && input.value) {
-                    formatCurrency(input);
-                }
-            });
-        </script>
-
-        <!-- Select Field -->
+        <!-- Operação -->
         <div>
             <ul class="items-center w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg sm:flex">
                 <li class="w-full border-b border-gray-200 sm:border-b-0 sm:border-r">
@@ -78,43 +58,37 @@
                                 type="radio"
                                 name="operation"
                                 value="ENTRADA"
-                                th:checked="${transaction != null and transaction.operation == T(com.ifmg.managementFinance.Entity.Operation).ENTRADA}"
+                                th:checked="${transaction.operation == T(com.ifmg.managementFinance.Entity.Operation).ENTRADA}"
                                 required
                                 class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500"
                         />
-                        <label for="horizontal-list-radio-entry" class="w-full py-3 ms-2 text-sm font-medium text-gray-900">
-                            Entrada
-                        </label>
+                        <label for="horizontal-list-radio-entry" class="w-full py-3 ms-2 text-sm font-medium text-gray-900">Entrada</label>
                     </div>
                 </li>
-                <li class="w-full border-b border-gray-200 sm:border-b-0 sm:border-r">
+                <li class="w-full">
                     <div class="flex items-center ps-3">
                         <input
                                 id="horizontal-list-radio-expense"
                                 type="radio"
                                 name="operation"
                                 value="SAIDA"
-                                th:checked="${transaction != null and transaction.operation == T(com.ifmg.managementFinance.Entity.Operation).SAIDA}"
+                                th:checked="${transaction.operation == T(com.ifmg.managementFinance.Entity.Operation).SAIDA}"
                                 required
                                 class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500"
                         />
-                        <label for="horizontal-list-radio-expense" class="w-full py-3 ms-2 text-sm font-medium text-gray-900">
-                            Saída
-                        </label>
+                        <label for="horizontal-list-radio-expense" class="w-full py-3 ms-2 text-sm font-medium text-gray-900">Saída</label>
                     </div>
                 </li>
             </ul>
         </div>
 
-
-
-        <!-- Date -->
+        <!-- Data -->
         <div>
             <label class="block text-sm font-medium text-gray-700">Data</label>
             <input type="date" name="entry_date" th:value="${#dates.format(transaction.entry_date, 'yyyy-MM-dd')}" class="mt-1 block w-full p-2 border border-gray-300 rounded" />
         </div>
 
-        <!-- Classification -->
+        <!-- Classificação -->
         <div>
             <label class="block text-sm font-medium text-gray-700">Classificação</label>
             <select name="type" class="mt-1 block w-full p-2 border border-gray-300 rounded">
@@ -122,13 +96,40 @@
             </select>
         </div>
 
-        <!-- Botão de salvar -->
-        <button type="submit" class="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600">
-            Atualizar Transação
-        </button>
+        <!-- Botão de Atualizar -->
+        <button type="submit" class="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600">Atualizar Transação</button>
     </form>
+
+    <script>
+        const currencyFormatter = new Intl.NumberFormat('pt-BR', {
+            style: 'currency',
+            currency: 'BRL',
+            minimumFractionDigits: 2
+        });
+
+        function updateOriginalValue(amount) {
+            document.getElementById('original-value').value = amount.toFixed(2);
+        }
+
+        function formatCurrency(e) {
+            const input = e.target;
+            let numeric = input.value.replace(/\D/g, '');
+            let number = parseInt(numeric, 10) / 100;
+            if (isNaN(number)) number = 0;
+            updateOriginalValue(number);
+            input.value = currencyFormatter.format(number);
+        }
+
+        window.addEventListener('load', () => {
+            const input = document.getElementById('value-formatted');
+            let initial = parseFloat(input.getAttribute('value').replace(',', '.'));
+            if (isNaN(initial)) initial = 0;
+            updateOriginalValue(initial);
+            input.value = currencyFormatter.format(initial);
+            input.addEventListener('input', formatCurrency);
+        });
+    </script>
 
 </main>
 </body>
-
 </html>
