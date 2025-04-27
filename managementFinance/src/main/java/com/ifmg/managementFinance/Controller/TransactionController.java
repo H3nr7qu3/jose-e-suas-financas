@@ -10,8 +10,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 @Controller
 @RequestMapping("/") // Define que todas as rotas deste controller começam pela raiz "/"
@@ -110,13 +113,15 @@ public class TransactionController {
     public String editTransaction(@PathVariable Long id, Model model) {
         Transaction transaction = transactionServiceImpl.findById(id);
 
-        if (transaction == null)
+        if (transaction == null) {
             return "redirect:/"; // Se não achar, volta pro início
+        }
 
         model.addAttribute("transaction", transaction);
         model.addAttribute("types", Type.values());
-        transactionServiceImpl.update(transaction, id);
-        return "edit-transaction"; // View de edição
+
+        // NÃO atualiza nada no banco aqui.
+        return "edit-transaction"; // View da edição
     }
 
     // Atualiza transação já existente
@@ -139,5 +144,16 @@ public class TransactionController {
     public String deleteTransaction(@PathVariable Long id) {
         trashService.delete(id); // Move a transação pra lixeira
         return "redirect:/";
+    }
+
+    private double parseValue(String valueFormatted) {
+        try {
+            // Remove símbolo de moeda, espaços, etc.
+            NumberFormat format = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+            Number number = format.parse(valueFormatted);
+            return number.doubleValue();
+        } catch (ParseException e) {
+            throw new RuntimeException("Erro ao converter o valor: " + valueFormatted, e);
+        }
     }
 }

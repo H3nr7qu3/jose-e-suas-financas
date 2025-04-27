@@ -37,11 +37,12 @@
                     id="value-formatted"
                     required
                     inputmode="decimal"
-                    th:value="${#numbers.formatDecimal(transaction.value, 1, 2)}"
+                    th:value="${#numbers.formatDecimal(T(java.lang.Math).abs(transaction.value), 1, 2)}"
                     class="mt-1 block w-full p-2 border border-gray-300 rounded"
             />
             <input type="hidden" name="value" id="original-value" />
         </div>
+
 
         <div>
             <ul class="items-center w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg sm:flex">
@@ -99,7 +100,9 @@
         });
 
         function updateOriginalValue(amount) {
-            document.getElementById('original-value').value = amount.toFixed(2);
+            const op = document.querySelector('input[name="operation"]:checked').value;
+            let finalAmount = op === 'SAIDA' ? -Math.abs(amount) : Math.abs(amount);
+            document.getElementById('original-value').value = finalAmount.toFixed(2);
         }
 
         function formatCurrency(e) {
@@ -107,9 +110,6 @@
             let numeric = input.value.replace(/\D/g, '');
             let amount = parseInt(numeric, 10) / 100;
             if (isNaN(amount)) amount = 0;
-            const op = document.querySelector('input[name="operation"]:checked').value;
-            // para saída, valor negativo
-            amount = op === 'SAIDA' ? -Math.abs(amount) : Math.abs(amount);
             updateOriginalValue(amount);
             input.value = currencyFormatter.format(amount);
         }
@@ -120,8 +120,6 @@
             raw = raw.replace(/\./g, '').replace(',', '.');
             let amount = parseFloat(raw);
             if (isNaN(amount)) amount = 0;
-            const op = document.querySelector('input[name="operation"]:checked').value;
-            amount = op === 'SAIDA' ? -Math.abs(amount) : Math.abs(amount);
             updateOriginalValue(amount);
             input.value = currencyFormatter.format(amount);
         }
