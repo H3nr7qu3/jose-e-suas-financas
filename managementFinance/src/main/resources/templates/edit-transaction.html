@@ -31,10 +31,11 @@
                     id="value-formatted"
                     name="value-formatted"
                     required inputmode="decimal"
-                    th:value="${#numbers.formatDecimal(T(java.lang.Math).abs(transaction.value),1,2)}"
+                    th:value="${transaction.operation == T(com.ifmg.managementFinance.Entity.Operation).SAIDA ? '-' + #numbers.formatDecimal(transaction.value, 1, 2) : #numbers.formatDecimal(transaction.value, 1, 2)}"
                     class="mt-1 block w-full p-2 border rounded"
+                    oninput="formatValue(this)"
             />
-            <input type="hidden" id="original-value" name="value" />
+            <input type="hidden" id="original-value" name="value" th:value="${transaction.value}" />
         </div>
 
         <!-- Operação -->

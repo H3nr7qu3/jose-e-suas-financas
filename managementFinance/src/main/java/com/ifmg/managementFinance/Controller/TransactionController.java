@@ -135,10 +135,5 @@ public class TransactionController {
         trashService.delete(id); // Move a transação pra lixeira
         return "redirect:/";
     }
-//    @GetMapping("/trash")
-//    public String showTrash(Model model) {
-//        // Adiciona ao modelo a lista de transações deletadas para exibição
-//        model.addAttribute("deletedTransactions", trashService.findAllDeleted());
-//        return "trash"; // Retorna a view da lixeira
-//    }
+
 }
