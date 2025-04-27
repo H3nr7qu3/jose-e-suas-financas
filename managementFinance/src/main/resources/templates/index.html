@@ -67,8 +67,12 @@
                     <i class="text-lg text-blue-500 mr-2" th:text="${transaction.getType().label}"></i>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap" th:text="${transaction.getName()}"></td>
-                <td class="px-6 py-4 text-right text-black-600 whitespace-nowrap"
-                    th:text="${#numbers.formatCurrency(transaction.getValue())}"></td>
+                <td class="px-6 py-4 text-right whitespace-nowrap">
+                <span th:text="${transaction.operation == T(com.ifmg.managementFinance.Entity.Operation).SAIDA
+                 ? '-' + #numbers.formatCurrency(T(java.lang.Math).abs(transaction.value))
+                 : #numbers.formatCurrency(transaction.value)}"></span>
+                </td>
+
                 <td class="px-6 py-4 whitespace-nowrap" th:text="${#dates.format(transaction.getEntry_date(), 'dd/MM/yyyy')}"></td>
                 <td class="px-6 py-4 whitespace-nowrap" th:text="${#dates.format(transaction.getRegister_date(), 'dd/MM/yyyy')}"></td>
                 <td class="px-6 py-4 whitespace-nowrap text-center space-x-2">

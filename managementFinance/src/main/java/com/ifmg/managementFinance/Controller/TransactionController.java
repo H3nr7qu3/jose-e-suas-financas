@@ -80,7 +80,7 @@ public class TransactionController {
         model.addAttribute("transactions", transactions);
         model.addAttribute("totalExpenses", totalExpenses);
         model.addAttribute("totalReceived", totalReceived);
-        model.addAttribute("total", totalReceived + totalExpenses);
+        model.addAttribute("total", totalReceived - totalExpenses);
 
         return "index";
     }
