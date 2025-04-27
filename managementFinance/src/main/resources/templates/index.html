@@ -64,10 +64,11 @@
             <!-- Listagem de transações -->
             <tr th:each="transaction : ${transactions}">
                 <td class="px-6 py-4 flex items-center whitespace-nowrap">
-                    <i class="text-lg text-blue-500 mr-2" th:text="${transaction.getType()}"></i>
+                    <i class="text-lg text-blue-500 mr-2" th:text="${transaction.getType().label}"></i>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap" th:text="${transaction.getName()}"></td>
-                <td class="px-6 py-4 text-right text-black-600 whitespace-nowrap" th:text="'R$ ' + ${transaction.getValue()}"></td>
+                <td class="px-6 py-4 text-right text-black-600 whitespace-nowrap"
+                    th:text="${#numbers.formatCurrency(transaction.getValue())}"></td>
                 <td class="px-6 py-4 whitespace-nowrap" th:text="${#dates.format(transaction.getEntry_date(), 'dd/MM/yyyy')}"></td>
                 <td class="px-6 py-4 whitespace-nowrap" th:text="${#dates.format(transaction.getRegister_date(), 'dd/MM/yyyy')}"></td>
                 <td class="px-6 py-4 whitespace-nowrap text-center space-x-2">
@@ -87,21 +88,22 @@
     <div th:if="${not #lists.isEmpty(transactions)}" class="mt-4 bg-white shadow rounded-lg p-6 flex justify-between">
         <div>
             <span class="block text-sm font-medium text-gray-700">Total Ganhos:</span>
-            <span class="text-xl font-bold text-green-600" th:text="'R$ ' + ${totalReceived}"></span>
+            <span class="text-xl font-bold text-green-600"
+                  th:text="${#numbers.formatCurrency(totalReceived)}"></span>
         </div>
 
         <div>
             <span class="block text-sm font-medium text-gray-700">Diferença: </span>
-            <span class="text-xl font-bold text-gray-600" th:text="'R$ ' + ${total}"></span>
+            <span class="text-xl font-bold text-gray-600"
+                  th:text="${#numbers.formatCurrency(total)}"></span>
         </div>
 
         <div>
             <span class="block text-sm font-medium text-gray-700">Total Despesas:</span>
-            <span class="text-xl font-bold text-red-600" th:text="'R$ ' + ${totalExpenses}"></span>
+            <span class="text-xl font-bold text-red-600"
+                  th:text="${#numbers.formatCurrency(totalExpenses)}"></span>
         </div>
     </div>
-
-
 
 </main>
 
