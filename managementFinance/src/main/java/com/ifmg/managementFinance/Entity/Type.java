@@ -14,7 +14,8 @@ public enum Type {
     SALARIO("Salário"),
     CONTAS("Contas"),
     INVESTIMENTO("Investimento"),
-    BEM_ESTAR("Bem-estar");
+    BEM_ESTAR("Bem-estar"),
+    OUTRO("Outro");
 //    MEGA_SENA("Mega sena"); // Talvez um dia, Seu José
 
     private final String label;

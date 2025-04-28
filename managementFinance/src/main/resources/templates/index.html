@@ -17,7 +17,7 @@
 <!-- Main Content -->
 <main class="flex-1 p-8">
 
-    <!-- Time Interval -->
+    <!-- Intervalo de tempo -->
     <form action="/filter" method="get" class="flex items-end space-x-4 mb-6">
         <div>
             <label for="fromDate" class="block text-sm font-medium text-gray-700">De:</label>
@@ -36,14 +36,14 @@
         <p th:text="${errorMessage}"></p>
     </div>
 
-    <!-- New Transaction Button -->
+    <!-- Botão New Transaction -->
     <div class="mb-4 flex justify-end">
         <a href="new-transaction" class="px-6 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
             + Nova Transação
         </a>
     </div>
 
-    <!-- Transactions Table -->
+    <!-- Tabela de Transactions -->
     <div class="overflow-x-auto bg-white shadow rounded-lg">
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
@@ -57,11 +57,11 @@
             </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
-            <!-- Check if there are transactions -->
+            <!-- Checa se está vazio -->
             <tr th:if="${#lists.isEmpty(transactions)}">
                 <td colspan="6" class="px-6 py-4 text-center text-gray-500">Nenhuma transação encontrada.</td>
             </tr>
-            <!-- Transactions Listing -->
+            <!-- Transactions -->
             <tr th:each="transaction : ${transactions}">
                 <td class="px-6 py-4 flex items-center whitespace-nowrap">
                     <i class="text-lg text-blue-500 mr-2" th:text="${transaction.getType().label}"></i>
@@ -88,7 +88,7 @@
         </table>
     </div>
 
-    <!-- Totals - Displayed only if there are transactions -->
+    <!-- Mostra os valores totais -->
     <div th:if="${not #lists.isEmpty(transactions)}" class="mt-4 bg-white shadow rounded-lg p-6 flex justify-between">
         <div>
             <span class="block text-sm font-medium text-gray-700">Total Ganhos:</span>
